@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIAKAD Cloud — Sistem Informasi Akademik</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ===================== LOGIN VIEW ===================== -->
+<div id="login-view" class="login-wrap">
+  <div class="login-card">
+    <div class="login-eyebrow">Layanan Cloud Kampus</div>
+    <h1>SIAKAD Cloud</h1>
+    <p class="sub">Sistem Informasi Akademik Sederhana Berbasis Cloud</p>
+
+    <div class="login-error" id="login-error"></div>
+
+    <form id="login-form">
+      <div class="field">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="cth. admin" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Masuk</button>
+    </form>
+
+    <div class="demo-accounts">
+      <strong>Akun Demo:</strong><br>
+      Admin &nbsp;: <code>admin</code> / <code>admin123</code><br>
+      Dosen &nbsp;: <code>dosen1</code> / <code>dosen123</code><br>
+      Mahasiswa : <code>mhs1</code> / <code>mhs123</code>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== APP SHELL (setelah login) ===================== -->
+<div id="app-view" class="app-shell" style="display:none;">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="eyebrow">Layanan Cloud Kampus</div>
+      <h2>SIAKAD Cloud</h2>
+    </div>
+
+    <div class="nav-item active" data-view="dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+      Dashboard
+    </div>
+    <div class="nav-item" data-view="mahasiswa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg>
+      Data Mahasiswa
+    </div>
+    <div class="nav-item" data-view="matakuliah">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      Mata Kuliah
+    </div>
+    <div class="nav-item" data-view="nilai">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Manajemen Nilai
+    </div>
+    <div class="nav-item" data-view="arsitektur">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      Arsitektur &amp; Backup
+    </div>
+
+    <div class="sidebar-foot">
+      <div class="user-chip" id="user-nama">-</div>
+      <div class="user-role" id="user-role">-</div>
+      <div class="logout-link" id="logout-btn">Keluar →</div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <!-- DASHBOARD -->
+    <section id="view-dashboard" class="view">
+      <div class="page-header">
+        <div>
+          <h1>Dashboard Statistik</h1>
+          <p class="sub">Ringkasan data akademik secara real-time</p>
+        </div>
+      </div>
+      <div class="stat-grid" id="stat-grid"></div>
+      <div class="chart-grid">
+        <div class="panel">
+          <h3>Rata-rata Nilai per Mata Kuliah</h3>
+          <div id="chart-matkul"></div>
+        </div>
+        <div class="panel">
+          <h3>Distribusi Nilai Huruf</h3>
+          <div class="huruf-grid" id="chart-huruf"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Mahasiswa per Program Studi</h3>
+        <div id="chart-prodi"></div>
+      </div>
+    </section>
+
+    <!-- MAHASISWA -->
+    <section id="view-mahasiswa" class="view" style="display:none;">
+      <div class="page-header">
+        <div>
+          <h1>Data Mahasiswa</h1>
+          <p class="sub">Kelola data induk mahasiswa</p>
+        </div>
+        <button class="btn btn-gold" id="btn-add-mahasiswa">+ Tambah Mahasiswa</button>
+      </div>
+      <div class="toolbar">
+        <input type="text" class="search-box" id="search-mahasiswa" placeholder="Cari nama atau NIM...">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>NIM</th><th>Nama</th><th>Program Studi</th><th>Semester</th><th>Email</th><th>Aksi</th></tr></thead>
+          <tbody id="tbody-mahasiswa"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- MATA KULIAH -->
+    <section id="view-matakuliah" class="view" style="display:none;">
+      <div class="page-header">
+        <div>
+          <h1>Mata Kuliah</h1>
+          <p class="sub">Kelola data mata kuliah yang ditawarkan</p>
+        </div>
+        <button class="btn btn-gold" id="btn-add-matakuliah">+ Tambah Mata Kuliah</button>
+      </div>
+      <div class="toolbar">
+        <input type="text" class="search-box" id="search-matakuliah" placeholder="Cari kode atau nama...">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Kode</th><th>Nama Mata Kuliah</th><th>SKS</th><th>Dosen Pengampu</th><th>Aksi</th></tr></thead>
+          <tbody id="tbody-matakuliah"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- NILAI -->
+    <section id="view-nilai" class="view" style="display:none;">
+      <div class="page-header">
+        <div>
+          <h1>Manajemen Nilai</h1>
+          <p class="sub" id="nilai-sub">Kelola nilai akademik mahasiswa</p>
+        </div>
+        <button class="btn btn-gold" id="btn-add-nilai">+ Input Nilai</button>
+      </div>
+      <div class="toolbar">
+        <input type="text" class="search-box" id="search-nilai" placeholder="Cari nama mahasiswa...">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>NIM</th><th>Nama Mahasiswa</th><th>Mata Kuliah</th><th>Nilai Angka</th><th>Nilai Huruf</th><th>Semester</th><th>Aksi</th></tr></thead>
+          <tbody id="tbody-nilai"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ARSITEKTUR & BACKUP -->
+    <section id="view-arsitektur" class="view" style="display:none;">
+      <div class="page-header">
+        <div>
+          <h1>Arsitektur Cloud &amp; Backup</h1>
+          <p class="sub">Penjelasan arsitektur dan pengelolaan backup data</p>
+        </div>
+      </div>
+
+      <div class="arch-note">
+        <h3>Arsitektur Cloud yang Digunakan</h3>
+        <p>Aplikasi ini dirancang untuk dihosting pada layanan <strong>Platform-as-a-Service (PaaS)</strong> seperti <strong>Railway</strong>, dengan arsitektur sebagai berikut:</p>
+        <ul>
+          <li><strong>Frontend</strong>: HTML, CSS, JavaScript (vanilla), disajikan secara statis oleh server Express.</li>
+          <li><strong>Backend</strong>: Node.js + Express.js menangani REST API (autentikasi, CRUD, statistik).</li>
+          <li><strong>Database</strong>: Disimulasikan dengan file JSON (<code>data/db.json</code>) yang tersimpan pada volume server cloud. Pada implementasi nyata dapat digantikan dengan layanan seperti Railway PostgreSQL, AWS RDS, MongoDB Atlas, dsb.</li>
+          <li><strong>Autentikasi</strong>: JSON Web Token (JWT) dengan password yang di-hash menggunakan bcrypt — mengimplementasikan <em>authentication</em> (siapa yang login) dan <em>authorization</em> berbasis role (admin, dosen, mahasiswa).</li>
+          <li><strong>Hosting</strong>: Seluruh aplikasi (frontend + backend) digabung dalam satu service Node.js yang dideploy ke Railway melalui koneksi GitHub repository atau Railway CLI, sehingga dapat diakses secara online melalui domain publik (<code>*.up.railway.app</code>).</li>
+        </ul>
+        <p style="margin-top:10px;"><strong>Alur Request:</strong> Client (Browser) → HTTPS → Railway Load Balancer → Express Server (Node.js) → File-based Database → Response JSON.</p>
+      </div>
+
+      <div class="arch-note" id="role-admin-only" style="margin-top:18px;">
+        <h3>Backup Data</h3>
+        <p>Sistem mendukung dua mode backup:</p>
+        <ul>
+          <li><strong>Backup Otomatis</strong>: Dijalankan terjadwal setiap hari pukul 02:00 melalui cron job pada server (lihat <code>server.js</code>), menyalin <code>db.json</code> ke folder <code>data/backups/</code>.</li>
+          <li><strong>Backup Manual</strong>: Admin dapat memicu backup kapan saja melalui tombol di bawah ini.</li>
+        </ul>
+        <div style="margin-top:14px; display:flex; gap:10px; align-items:center;">
+          <button class="btn btn-outline btn-sm" id="btn-backup-now">Jalankan Backup Sekarang</button>
+          <span id="backup-status" style="font-size:13px; color:#8a8378;"></span>
+        </div>
+        <div id="backup-list" style="margin-top:14px; font-size:13px; color:#4a463d;"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ===================== MODAL ===================== -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="/js/api.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>
