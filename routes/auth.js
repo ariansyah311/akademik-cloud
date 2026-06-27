@@ -17,7 +17,7 @@ router.post('/login', (req, res) => {
   if (!valid) return res.status(401).json({ message: 'Password salah.' });
 
   const token = jwt.sign(
-    { id: user.id, username: user.username, role: user.role, nama: user.nama },
+    { id: user.id, username: user.username, role: user.role, nama: user.nama, nim: user.nim || null },
     SECRET,
     { expiresIn: '8h' }
   );
@@ -25,7 +25,7 @@ router.post('/login', (req, res) => {
   res.json({
     message: 'Login berhasil',
     token,
-    user: { id: user.id, username: user.username, role: user.role, nama: user.nama }
+    user: { id: user.id, username: user.username, role: user.role, nama: user.nama, nim: user.nim || null }
   });
 });
 
